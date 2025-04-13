@@ -1,17 +1,17 @@
-CREATE DATABASE BookStore_Db;
+CREATE DATABASE BookStoreDb;
 
 -- Creating book Table
-USE BookStore_Db;
+USE BookStoreDb;
 
 CREATE TABLE book (
-book_id INT auto_increment primary key,
-title varchar(255) NOT NULL,
-author varchar(255),
-genre varchar(100),
-published_date DATE,
-isbn varchar(20) unique,
+bookId INT auto_increment primary key,
+title VARCHAR(255) NOT NULL,
+author VARCHAR(255),
+genre VARCHAR(100),
+publicationDate DATE,
+isbn VARCHAR(20) UNIQUE,
 price DECIMAL (10,2),
-stock_quantity INT,
+stockQuantity INT,
 created_at timestamp default current_timestamp
 );
 
@@ -19,7 +19,7 @@ created_at timestamp default current_timestamp
 -- inserting list of books available in the store
 USE BookStore_Db;
 
-INSERT INTO book (title, author, genre, published_date, isbn, price, stock_quantity)
+INSERT INTO book (title, author, genre, publicationDate_date, isbn, price, stock_quantity)
 VALUES
 ('City its military.', 'James Cook', 'Dystopian', '1970-08-14', '9780722850817', 34.42, 50),
 ('Leg young seem.', 'Dawn Benson', 'Biography', '2021-07-30', '9780152770235', 31.07, 85),
@@ -125,13 +125,13 @@ VALUES
 
 -- Creating author table
 CREATE TABLE author (
-    author_id INT AUTO_INCREMENT PRIMARY KEY,
+    authorId INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
 
 
 -- inserting list of all authors in table
-USE BookStore_Db;
+USE BookStoreDb;
 
 INSERT INTO author (name) VALUES
 ('Emma Johnson'),
@@ -241,9 +241,9 @@ INSERT INTO author (name) VALUES
 ('Vera Bishop');
 
 -- Insert data for  book-author relations
-Use BookStore_Db;
+Use BookStoreDb;
 
-INSERT INTO book_author (book_id, author_id) VALUES
+INSERT INTO bookAuthor (bookId, authorId) VALUES
 (1, 5),
 (2, 15),
 (3, 8),
@@ -347,30 +347,30 @@ INSERT INTO book_author (book_id, author_id) VALUES
 
 
 -- Creating book_author table
-USE bookstore_db;
+USE bookstoredb;
 
-CREATE TABLE  book_author (
-    book_id INT NOT NULL,
-    author_id INT NOT NULL,
-    PRIMARY KEY (book_id, author_id),
-    FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE CASCADE,
-    FOREIGN KEY (author_id) REFERENCES author(author_id) ON DELETE CASCADE
+CREATE TABLE  bookAuthor (
+    bookId INT NOT NULL,
+    authorId INT NOT NULL,
+    PRIMARY KEY (bookId, authorId),
+    FOREIGN KEY (bookId) REFERENCES book(bookId) ON DELETE CASCADE,
+    FOREIGN KEY (authorId) REFERENCES author(authorId) ON DELETE CASCADE
 );
 
 
 -- Create book_language 
-USE bookstore_db;
+USE bookstoredb;
 
-CREATE TABLE book_language (
-    language_id INT AUTO_INCREMENT PRIMARY KEY,
-    language_name VARCHAR(255) NOT NULL
+CREATE TABLE bookLanguage (
+    languageId INT AUTO_INCREMENT PRIMARY KEY,
+    languageName VARCHAR(255) NOT NULL
 );
 
 
 -- Inserting book_language data
-USE bookstore_db;
+USE bookstoredb;
 
-INSERT INTO book_language (language_name) VALUES
+INSERT INTO bookLanguage (languageName) VALUES
 ('English'),
 ('Spanish'),
 ('French'),
@@ -427,17 +427,17 @@ INSERT INTO book_language (language_name) VALUES
 
 
 -- Creating publisher table
-USE bookstore_db;
+USE bookstoredb;
 
-CREATE TABLE IF NOT EXISTS publisher (
-    publisher_id INT AUTO_INCREMENT PRIMARY KEY,
-    publisher_name VARCHAR(255) NOT NULL
+CREATE TABLE  publisher (
+    publisherId INT AUTO_INCREMENT PRIMARY KEY,
+    publisherName VARCHAR(255) NOT NULL
 );
 
 -- Inserting data into publisher table
-USE bookstore_db;
+USE bookstoredb;
 
-INSERT INTO publisher (publisher_name) VALUES
+INSERT INTO publisher (publisherName) VALUES
 ('Penguin Random House'),
 ('HarperCollins'),
 ('Simon & Schuster'),
