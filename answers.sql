@@ -17,9 +17,9 @@ created_at timestamp default current_timestamp
 
 
 -- inserting list of books available in the store
-USE BookStore_Db;
+USE BookStoreDb;
 
-INSERT INTO book (title, author, genre, publicationDate_date, isbn, price, stock_quantity)
+INSERT INTO book (title, author, genre, publicationDate, isbn, price, stockQuantity)
 VALUES
 ('City its military.', 'James Cook', 'Dystopian', '1970-08-14', '9780722850817', 34.42, 50),
 ('Leg young seem.', 'Dawn Benson', 'Biography', '2021-07-30', '9780152770235', 31.07, 85),
@@ -489,3 +489,213 @@ INSERT INTO publisher (publisherName) VALUES
 ('New York Review Books'),
 ('The New Press'),
 ('Graywolf Press');
+
+USE bookstoredb;
+-- Creating Country table --
+CREATE TABLE country (
+    countryId INT AUTO_INCREMENT PRIMARY KEY,
+    countryName VARCHAR(100) NOT NULL,
+    countryCode VARCHAR(3),
+    phoneCode VARCHAR(20),
+    currencyCode VARCHAR(10)
+);
+
+USE bookstoredb;
+-- Inserting A list of countries where the addresses are located --
+ INSERT INTO country (countryName, countryCode, phoneCode, currencyCode)
+VALUES 
+('South Africa', 'ZAF', '+27', 'ZAR'),
+('United States', 'USA', '+1', 'USD'),
+('Kenya', 'KEN', '+254', 'KES');
+
+USE bookstoredb;
+-- Creating adressStatus table --
+CREATE TABLE addressStatus (
+    statusId INT AUTO_INCREMENT PRIMARY KEY,
+    statusName VARCHAR(50) NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    USE bookstoredb;
+-- Inserting a list of statuses for an address --
+INSERT INTO addressStatus (statusName)
+VALUES 
+('Current'),
+('Old'),
+('Temporary');
+
+USE bookstoredb;
+-- Creating Address table
+CREATE TABLE address (
+    addressId INT AUTO_INCREMENT PRIMARY KEY,
+    addressLine1 VARCHAR(255) NOT NULL,
+    addressLine2 VARCHAR(255),
+    city VARCHAR(100),
+    state VARCHAR(100),
+    postalCode VARCHAR(20),
+    countryId INTEGER REFERENCES country(countryId),
+    latitude DECIMAL(9,6),
+    longitude DECIMAL(9,6),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+USE bookstoredb;
+-- Inserting a list of all addresses in the system 
+INSERT INTO address (addressLine1, addressLine2, city, state, postalCode, countryId, latitude, longitude)
+VALUES 
+('123 Long Street', 'Suite 1A', 'Cape Town', 'Western Cape', '8001', 1, -33.9249, 18.4241),
+('456 Main Avenue', NULL, 'Johannesburg', 'Gauteng', '2000', 1, -26.2041, 28.0473),
+('789 Broadway', 'Apt 5B', 'New York', 'NY', '10003', 2, 40.7128, -74.0060);
+
+USE bookstoredb;
+-- Creating Customer table
+CREATE TABLE customer (
+    customerId INT AUTO_INCREMENT PRIMARY KEY,
+    firstName VARCHAR(100) NOT NULL,
+    lastName VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    phoneNumber VARCHAR(20),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+USE bookstoredb;
+-- Inserting a list of the bookstore's customers.
+INSERT INTO customer (firstName, lastName, email, phoneNumber)
+VALUES 
+('John', 'Doe', 'john.doe@example.com', '+27123456789'),
+('Alice', 'Smith', 'alice.smith@example.com', '+27119876543'),
+('Lebo', 'Mokoena', 'lebo.mokoena@example.com', '+27612345678'),
+('Sipho', 'Dlamini', 'sipho.dlamini@example.com', '+27723456789'),
+('Thandi', 'Nkosi', 'thandi.nkosi@example.com', '+27834567890'),
+('Michael', 'Brown', 'michael.brown@example.com', '+12125551234'),
+('Emily', 'Smith', 'emily.smith@example.com', '+447911123456'),
+('Ahmed', 'Khan', 'ahmed.khan@example.com', '+971501234567'),
+('Fatima', 'Patel', 'fatima.patel@example.com', '+919876543210'),
+('Jean', 'Dupont', 'jean.dupont@example.com', '+33123456789'),
+('Chen', 'Li', 'chen.li@example.com', '+8613800138000'),
+('Maria', 'Gonzalez', 'maria.gonzalez@example.com', '+34912345678');
+
+USE bookstoredb;
+-- Creating customer Address table
+CREATE TABLE customerAddress (
+    customeraddressId SERIAL PRIMARY KEY,
+    customerId INTEGER REFERENCES customer(customerId),
+    addressId INTEGER REFERENCES address(addressId),
+    statusId INTEGER REFERENCES addressStatus(statusId),
+    addressType VARCHAR(50), -- e.g., Billing, Shipping
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+USE bookstoredb;
+-- Inserting a list of addresses for customers
+INSERT INTO customerAddress (customerId, addressId, statusId, addressType)
+VALUES 
+(1, 1, 1, 'Shipping'),
+(1, 2, 2, 'Billing'),
+(2, 3, 1, 'Shipping'),
+(3, 1, 1, 'Shipping'),
+(3, 2, 2, 'Billing'),
+(4, 2, 1, 'Shipping'),
+(4, 3, 3, 'Billing'),
+(5, 1, 1, 'Shipping'),
+(5, 3, 1, 'Billing'),
+(6, 3, 1, 'Shipping'),
+(7, 3, 1, 'Shipping'),
+(8, 3, 1, 'Shipping'),
+(9, 1, 1, 'Shipping'),
+(10, 2, 1, 'Shipping'),
+(11, 3, 1, 'Shipping'),
+(12, 3, 1, 'Shipping');
+
+-- Creating table for custdata
+USE bookstoredb;
+CREATE TABLE custdata (
+    orderId SERIAL PRIMARY KEY,
+    customerId INTEGER REFERENCES customer(customerId),
+    orderDate DATE NOT NULL,
+    orderStatusId INTEGER,
+    shippingMethodId INTEGER,
+    totalAmount DECIMAL(10, 2),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- inserting A list of orders placed by customers
+INSERT INTO custdata (customerId, orderDate, orderstatusId, shippingmethodid, totalAmount)
+VALUES
+(1, '2025-04-01', 3, 1, 450.00),
+(2, '2025-04-02', 2, 2, 320.50),
+(3, '2025-04-03', 1, 1, 780.00),
+(4, '2025-04-04', 3, 3, 1200.75),
+(5, '2025-04-05', 2, 2, 550.20),
+(6, '2025-04-06', 1, 1, 215.99),
+(7, '2025-04-07', 3, 2, 640.40),
+(8, '2025-04-08', 4, 1, 0.00), -- Cancelled order
+(9, '2025-04-09', 2, 3, 980.00),
+(10, '2025-04-10', 1, 2, 330.25),
+(11, '2025-04-11', 3, 1, 510.00),
+(12, '2025-04-12', 2, 2, 720.80);
+
+-- Creating order line table
+CREATE TABLE orderline (
+    orderlineId SERIAL PRIMARY KEY,
+    bookId INTEGER NOT NULL,
+    orderId INTEGER NOT NULL REFERENCES custdata(orderId),
+    quantity INTEGER NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Inserting A list of books that are part of each order
+INSERT INTO orderline (bookId, orderId, quantity, price)
+VALUES
+(1, 1, 2, 150.00),
+(3, 1, 1, 150.00),
+(2, 2, 1, 120.50),
+(4, 2, 2, 100.00),
+(3, 3, 3, 260.00),
+(5, 4, 4, 300.00),
+(1, 5, 2, 150.00),
+(4, 5, 1, 100.20),
+(2, 6, 1, 215.99),
+(3, 7, 2, 320.20),
+-- (Cancelled order)
+(4, 8, 1, 0.00),
+(5, 9, 2, 490.00),
+(1, 10, 1, 150.25),
+(3, 10, 1, 180.00),
+(2, 11, 2, 255.00),
+(5, 12, 3, 240.27);
+
+-- Creating table for Shipping Method
+
+CREATE TABLE shippingMethod (
+    methodId SERIAL PRIMARY KEY,
+    methodName VARCHAR(100) NOT NULL,
+    description VARCHAR(255),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Inserting A list of possible shipping methods for an order
+INSERT INTO shippingMethod (methodName, description)
+VALUES
+('Standard Shipping', 'Delivery within 5-7 business days. Affordable and reliable.'),
+('Express Shipping', 'Faster delivery within 2-3 business days.'),
+('Overnight Shipping', 'Next-day delivery for urgent orders.'),
+('Pickup In-Store', 'Customer picks up the order directly from the store.'),
+('International Shipping', 'Shipping outside the country, delivery times vary.');
+
+
+
+
+
+
+
+
+
